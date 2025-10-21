@@ -92,11 +92,11 @@ export const profileController = asyncHandler(async (req: AuthenticatedRequest, 
 });
 
 export const updateName = asyncHandler(async (req: AuthenticatedRequest, res) => {
-    const user = await User.findById(req.user?.id);
+    const user = await User.findById(req.user?._id);
     if (!user) {
         res.status(HTTPSTATUS.NOT_FOUND).json({
             success: false,
-            message: "Please login"
+            message: "Please login",
         });
         return;
     }
