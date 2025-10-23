@@ -1,12 +1,16 @@
 "use client"
 
-import { authApi } from '@/services/authApi';
+import { userApi } from '@/services/userApi';
 import { ArrowRight, ChevronLeft, Loader2Icon, LockIcon } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
+import { useAppData } from '@/context/AppContext';
+import Loading from './Loading';
+import toast from 'react-hot-toast';
 
 const VerifyOtp = () => {
+    const { isAuth, setIsAuth, setUser, loading: userLoading, fetchChats, fetchUsers } = useAppData();
     const [loading, setLoading] = useState<boolean>(false);
     const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
     const [error, setError] = useState<string | null>(null);
@@ -68,14 +72,18 @@ const VerifyOtp = () => {
         setError(null);
         setLoading(true);
         try {
-            const data = await authApi.verifyOtp(email, otpString);
-            alert(data.message);
+            const data = await userApi.verifyOtp(email, otpString);
+            toast.success(data.message);
             Cookies.set("token", data.token, {
                 expires: 15,
                 secure: false, //most probably will host in aws http so false if later hosted with https then can set to true
             });
             setOtp(["", "", "", "", "", ""]);
             inputRefs.current[0]?.focus();
+            setUser(data.user);
+            setIsAuth(true);
+            fetchChats();
+            fetchUsers();
             //Task - Auth Store Code
             // router.push(``);
         } catch (error: any) {
@@ -90,8 +98,8 @@ const VerifyOtp = () => {
         setError(null);
 
         try {
-            const data = await authApi.login(email);
-            alert(data.message);
+            const data = await userApi.login(email);
+            toast.success(data.message);
             setTimer(60);
         } catch (error: any) {
             setError(error.response.data.message);
@@ -99,6 +107,10 @@ const VerifyOtp = () => {
             setResendLoading(false);
         }
     }
+
+    if (userLoading) return <Loading />;
+
+    if (isAuth) return redirect("/chat");
 
     return (
         <div className='min-h-screen bg-gray-900 flex items-center justify-center p-4'>

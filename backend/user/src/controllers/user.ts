@@ -84,11 +84,7 @@ export const verifyUser = asyncHandler(async (req, res) => {
 
 export const profileController = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const user = req.user;
-    res.status(HTTPSTATUS.OK).json({
-        success: true,
-        message: 'Profile fetched successfully',
-        user: { ...user }
-    });
+    res.status(HTTPSTATUS.OK).json({ ...user });
 });
 
 export const updateName = asyncHandler(async (req: AuthenticatedRequest, res) => {
