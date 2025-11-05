@@ -1,5 +1,6 @@
 import { User } from "@/context/AppContext";
 import { chatServiceApiClient } from "./apiClient";
+import { SendMessageFormType } from "@/app/chat/page";
 
 
 export const chatApi = {
@@ -11,12 +12,20 @@ export const chatApi = {
         const response = await chatServiceApiClient.post('/api/v1/chat/new', { userId, otherUserId });
         return response.data;
     },
-    fetchMessages: async(user: string | null) => {
+    fetchMessages: async (user: string | null) => {
         const response = await chatServiceApiClient.get(`/api/v1/chat/message/${user}`);
         return {
             messages: response.data.messages,
             user: response.data.user
         };
+    },
+    sendMessage: async (formData: any) => {
+        const response = await chatServiceApiClient.post('/api/v1/chat/message', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+        return response.data;
     }
 
 }

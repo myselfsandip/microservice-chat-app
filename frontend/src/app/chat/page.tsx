@@ -1,8 +1,10 @@
 "use client"
 
 import ChatHeader from '@/components/ChatHeader';
+import ChatMessages from '@/components/ChatMessages';
 import ChatSidebar from '@/components/ChatSidebar';
 import Loading from '@/components/Loading';
+import MessageInput from '@/components/MessageInput';
 import { useAppData, User } from '@/context/AppContext'
 import { chatApi } from '@/services/chatApi';
 import { useRouter } from 'next/navigation';
@@ -22,7 +24,12 @@ export interface Message {
     seen: boolean;
     seenAt?: string;
     createdAt: string;
+}
 
+export interface SendMessageFormType {
+    chatId: string;
+    text?: string;
+    image?: File;
 }
 
 const ChatApp = () => {
@@ -67,6 +74,49 @@ const ChatApp = () => {
         }
     }
 
+    const handleMessageSend = async (e: any, imageFile?: File | null) => {
+        e.preventDefault();
+        if (!message.trim() && !imageFile) return;
+        if (!selectedUser) return;
+        //socket work
+
+        try {
+            const formData = new FormData();
+            formData.append("chatId", selectedUser);
+            if (message.trim()) {
+                formData.append("text", message);
+            }
+            if (imageFile) {
+                formData.append("image", imageFile);
+            }
+
+            const data = await chatApi.sendMessage(formData);
+
+            setmessages((prev) => {
+                const currentMessages = prev || [];
+                const messageExists = currentMessages.some(
+                    (msg) => msg._id === data.message._id
+                )
+
+                if (!messageExists) {
+                    return [...currentMessages, data.message];
+                }
+                return currentMessages;
+            });
+
+            setmessage("");
+
+            const displayText = imageFile ? "📷" : message;
+        } catch (error: any) {
+            toast.error(error.response.data.message);
+        }
+    }
+    const handleTyping = (value: string) => {
+        setmessage(value);
+        if (!selectedUser) return;
+        //Socket Setup
+    }
+
     useEffect(() => {
         if (selectedUser) {
             fetchChat();
@@ -92,7 +142,9 @@ const ChatApp = () => {
 
             {/* Chat Header */}
             <div className="flex-1 flex flex-col justify-between p-4 backdrop-blur-xl bg-white/5 border border-white/10 ">
-                <ChatHeader />
+                <ChatHeader user={user} setSidebarOpen={setsidebarOpen} isTyping={isTyping} />
+                <ChatMessages selectedUser={selectedUser} messages={messages} loggedInUser={loggedInUser} />
+                <MessageInput selectedUser={selectedUser} message={message} setMessage={handleTyping} handleMessageSend={handleMessageSend} />
             </div>
         </div>
     )
