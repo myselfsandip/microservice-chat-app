@@ -1,5 +1,5 @@
 {
-  "name": "mail",
+  "name": "api-gateway",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,18 +12,23 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
-    "amqplib": "^0.10.9",
+    "concurrently": "^9.2.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-    "nodemailer": "^7.0.9"
+    "express-http-proxy": "^2.1.2",
+    "helmet": "^8.1.0",
+    "http-proxy-middleware": "^3.0.5"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.7",
+    "@types/concurrently": "^6.4.0",
+    "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",
-    "@types/express": "^5.0.3",
-    "@types/nodemailer": "^7.0.2",
-    "concurrently": "^9.2.1"
+    "@types/express": "^5.0.5",
+    "@types/express-http-proxy": "^1.6.7",
+    "@types/helmet": "^0.0.48",
+    "@types/http-proxy-middleware": "^0.19.3"
   }
 }

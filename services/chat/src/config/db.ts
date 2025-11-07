@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { logger } from "./winston.js";
 
 
 const connectDB = async () => {
@@ -6,13 +7,14 @@ const connectDB = async () => {
     if (!DB_URL) {
         throw new Error("MONGO_URI is not defined in environment variables");
     }
+    
     try {
         const conn = await mongoose.connect(DB_URL, {
             dbName: "Microserviceschatapp"
         });
-        console.log("Connected to DB");
+        logger.info("DB Connection Successfull");
     } catch (error) {
-        console.error(`Failed to connect to DB`);
+        logger.error('Mongoose connection error');
         process.exit(1);
     }
 }

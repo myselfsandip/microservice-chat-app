@@ -1,4 +1,5 @@
 import amqp from "amqplib"
+import { logger } from "./winston.js";
 
 let channel: amqp.Channel;
 
@@ -12,9 +13,9 @@ export const connectRabbitMQ = async () => {
             password: process.env.RABBIT_MQ_PASS
         });
         channel = await connection.createChannel();
-        console.log("✅ connected to rabbitmq");
+        logger.info("✅ connected to rabbitmq");
     } catch (error) {
-        console.log("Failed to connect to rabbitmq", error);
+        logger.error("Failed to connect to rabbitmq", error);
     }
 }
 
@@ -22,7 +23,7 @@ export const connectRabbitMQ = async () => {
 export const publishToQueue = async (queueName: string, message: any) => {
     try {
         if (!channel) {
-            console.log("Rabbitmq channel is not initialized");
+            logger.info("Rabbitmq channel is not initialized");
             return;
         }
         await channel.assertQueue(queueName, { durable: true });
@@ -30,6 +31,6 @@ export const publishToQueue = async (queueName: string, message: any) => {
             persistent: true
         });
     } catch (error) {
-        console.log(`Unable to publish to queue: `, error);
+        logger.error(`Unable to publish to queue: `, error);
     }
 }

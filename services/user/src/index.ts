@@ -7,6 +7,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.js"
 import { connectRabbitMQ } from "./config/rabbitmq.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import helmet from "helmet";
 
 
 dotenv.config();
@@ -23,11 +24,16 @@ redisClient.connect().then(() => console.log('Connected to redis')).catch((conso
 const app = express();
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
-app.use(express.json());
+
+
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,
 }));
+app.use(helmet()); // Add security headers
+app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json());
+
 app.use("/api/v1/user", userRoutes);
 
 //Error Handler

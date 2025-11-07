@@ -8,6 +8,7 @@ import { AuthenticatedRequest } from "../middlewares/authMiddleware.js";
 import { Response } from "express";
 
 export const loginController = asyncHandler(async (req, res) => {
+    console.log("Req came")
     const { email } = req.body;
     const rateLimitKey = `otp:ratelimit:${email}`;
     const rateLimit = await redisClient.get(rateLimitKey);

@@ -6,6 +6,7 @@ import ChatSidebar from '@/components/ChatSidebar';
 import Loading from '@/components/Loading';
 import MessageInput from '@/components/MessageInput';
 import { useAppData, User } from '@/context/AppContext'
+import { SocketData } from '@/context/SocketContext';
 import { chatApi } from '@/services/chatApi';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -34,6 +35,9 @@ export interface SendMessageFormType {
 
 const ChatApp = () => {
     const { isAuth, loading, logoutUser, chats, user: loggedInUser, users, fetchChats, setChats } = useAppData();
+    const { onlineUsers, socket } = SocketData();
+
+
     const router = useRouter();
 
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
@@ -78,7 +82,17 @@ const ChatApp = () => {
         e.preventDefault();
         if (!message.trim() && !imageFile) return;
         if (!selectedUser) return;
+
         //socket work
+        if (typingTimeOut) {
+            clearTimeout(typingTimeOut);
+            settypingTimeOut(null);
+        }
+
+        socket?.emit("stoppedTyping", {
+            chatId: selectedUser,
+             userId: loggedInUser?._id,
+        })
 
         try {
             const formData = new FormData();
@@ -138,11 +152,12 @@ const ChatApp = () => {
                 setSelectedUser={setSelectedUser}
                 handleLogout={logoutUser}
                 createChat={createChat}
+                onlineUsers={onlineUsers}
             />
 
             {/* Chat Header */}
             <div className="flex-1 flex flex-col justify-between p-4 backdrop-blur-xl bg-white/5 border border-white/10 ">
-                <ChatHeader user={user} setSidebarOpen={setsidebarOpen} isTyping={isTyping} />
+                <ChatHeader user={user} setSidebarOpen={setsidebarOpen} isTyping={isTyping} onlineUsers={onlineUsers} />
                 <ChatMessages selectedUser={selectedUser} messages={messages} loggedInUser={loggedInUser} />
                 <MessageInput selectedUser={selectedUser} message={message} setMessage={handleTyping} handleMessageSend={handleMessageSend} />
             </div>

@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { logger } from "./winston.js";
 
 
 const connectDB = async () => {
@@ -10,9 +11,9 @@ const connectDB = async () => {
         const conn = await mongoose.connect(DB_URL, {
             dbName: "Microserviceschatapp"
         });
-        console.log("Connected to DB");
+        logger.info("Connected to DB");
     } catch (error) {
-        console.error(`Failed to connect to DB`);
+        logger.error(`Failed to connect to DB`);
         process.exit(1);
     }
 }

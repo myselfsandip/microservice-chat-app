@@ -6,8 +6,8 @@ import toast, { Toaster } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { chatApi } from "@/services/chatApi";
 
-export const userService = process.env.NEXT_PUBLIC_USER_SERVICE;
-export const chatService = process.env.NEXT_PUBLIC_CHAT_SERVICE;
+export const userService = `${process.env.NEXT_PUBLIC_USER_SERVICE}`;
+export const chatService = `${process.env.NEXT_PUBLIC_CHAT_SERVICE}`;
 
 export interface User {
     _id: string;
