@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 
 const token = Cookies.get('token');
 
+
 export const userServiceApiClient = axios.create({
     baseURL: `${process.env.NEXT_PUBLIC_USER_SERVICE}`,
     headers: {

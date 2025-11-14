@@ -16,6 +16,10 @@ export const io = new Server(server, {
 
 const userSocketMap: Record<string, string> = {};
 
+export const getRecieverSocketId = (recieverId: string): string | undefined => {
+    return userSocketMap[recieverId];
+}
+
 const socketLogs = getFileLogger("logs/socket.log");
 
 io.on("connection", (socket: Socket) => {
@@ -58,7 +62,9 @@ io.on("connection", (socket: Socket) => {
     socket.on("leaveChat", (chatId) => {
         socket.leave(chatId);
         socketLogs.warn("User Left Chat Room", { userId, chatId, socketId: socket.id });
-    })
+    });
+
+
 
     socket.on("disconnect", () => {
         socketLogs.warn("User Disconnected", { socketId: socket.id });

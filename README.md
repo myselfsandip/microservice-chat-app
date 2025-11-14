@@ -39,8 +39,6 @@ This project is a **real-time messaging platform** that enables one-on-one chats
 Next.js (Frontend)
        │
        ▼
-Express.js Gateway (API Gateway)
-       │
  ┌──────────────┬──────────────┬──────────────┐
  │ Auth Service │ Chat Service │ User Service │
  └──────────────┴──────────────┴──────────────┘
@@ -53,7 +51,6 @@ Express.js Gateway (API Gateway)
 ```
 
 - **Frontend (Next.js)**: UI, authentication, client-side socket connection.
-- **API Gateway (Express)**: routes requests to microservices, handles static assets, and terminates TLS in production (or behind a load balancer).
 - **Auth Service**: user registration/login, JWT issuance/refresh.
 - **User Service**: user profile, contact lists, search.
 - **Chat Service**: message persistence, message retrieval, integrations with Socket.IO and RabbitMQ.
@@ -278,7 +275,6 @@ Guidelines for deploying to AWS:
 - Use **ElastiCache (Redis)** for Redis.
 - Use **Amazon MQ** or managed RabbitMQ (or self-host on EC2/ECS).
 - Deploy services as Docker containers on **ECS Fargate** or **EKS**.
-- Use **ALB (Application Load Balancer)** in front of API Gateway and Socket servers.
 - Use **S3** + **CloudFront** for serving Next.js static assets (or use Next.js serverless options).
 - Manage secrets with **AWS Secrets Manager** or **SSM Parameter Store**.
 - Use auto-scaling groups / ECS service autoscaling for throughput.
